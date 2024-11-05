@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fastapi-supabase-template"
+version = "0.1.0"
+description = "FastAPI backend with Supabase authentication integration"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+authors = [
+    { name = "Bruno", email = "bwagner57@gmail.com" }
+]
+
+dependencies = [
+    "fastapi>=0.100.0",
+    "python-jwt>=4.0.0",
+    "uvicorn>=0.22.0",
+    "python-dotenv>=1.0.0",
+    "PyJWT"
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpie>=3.2.1",  # For testing API endpoints
+]
