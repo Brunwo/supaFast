@@ -38,3 +38,26 @@ Run a sample using httpie:
 
 - All sensitive credentials should be stored in `.env`
 - Never commit `.env` to version control
+
+## Configuration
+
+### Option 1: Direct configuration (recommended)
+
+```python
+from fastapi_supabase_template import SupabaseAuthConfig, JWTAuthenticator
+config = SupabaseAuthConfig(
+jwt_secret="your_jwt_secret",
+origins=["http://localhost:3000"]
+)
+auth = JWTAuthenticator(config)
+```
+### Option 2: Environment variables
+
+
+```python
+from fastapi_supabase_template import SupabaseAuthConfig, JWTAuthenticator
+This will automatically load from .env file
+config = SupabaseAuthConfig.from_env()
+auth = JWTAuthenticator(config)
+
+```

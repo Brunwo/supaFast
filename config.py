@@ -1,11 +1,30 @@
-from dotenv import load_dotenv
-import os
+from typing import Optional, List
 
-# Load environment variables from a .env file
-load_dotenv()
+class SupabaseAuthConfig:
+    """Configuration class for Supabase Authentication"""
+    def __init__(
+        self,
+        jwt_secret: str,
+        origins: Optional[List[str]] = None,
+        algorithm: str = "HS256"
+    ):
+        self.jwt_secret = jwt_secret
+        self.origins = origins or []
+        self.algorithm = algorithm
 
-JWT_SECRET = os.getenv("JWT_SECRET")
-TEST_TOKEN = os.getenv("TEST_TOKEN")
-ORIGINS = os.getenv("ORIGINS", "").split(",")
-
-ALGORITHM = "HS256"
+    @classmethod
+    def from_env(cls, load_dotenv=True):
+        """
+        Optional factory method to create config from environment variables
+        Only use this if you explicitly want to support .env files
+        """
+        from dotenv import load_dotenv as _load_dotenv
+        import os
+        
+        if load_dotenv:
+            _load_dotenv()
+            
+        return cls(
+            jwt_secret=os.getenv("JWT_SECRET", ""),
+            origins=os.getenv("ORIGINS", "").split(",") if os.getenv("ORIGINS") else [],
+        )

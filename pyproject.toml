@@ -17,11 +17,17 @@ dependencies = [
     "fastapi>=0.100.0",
     "python-jwt>=4.0.0",
     "uvicorn>=0.22.0",
-    "python-dotenv>=1.0.0",
     "PyJWT"
 ]
 
 [project.optional-dependencies]
 dev = [
+    "python-dotenv>=1.0.0", # Moved to optional dependencies
     "httpie>=3.2.1",  # For testing API endpoints
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+include = [
+    "/*.py"
 ]

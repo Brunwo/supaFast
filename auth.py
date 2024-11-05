@@ -5,6 +5,7 @@ import jwt
 from typing import Optional, Dict
 from datetime import datetime
 import base64
+from .config import SupabaseAuthConfig
 
 class TokenData(BaseModel):
     user_id: str
@@ -17,22 +18,21 @@ class TokenData(BaseModel):
 class JWTAuthenticator:
     def __init__(
         self, 
-        jwt_secret: str,
-        aud: Optional[str] = None,  # Expected audience
-        iss: Optional[str] = None,  # Expected issuer (e.g., "supabase")
-        leeway: int = 30,  # Seconds of leeway for exp verification
+        config: SupabaseAuthConfig,
+        aud: Optional[str] = None,
+        iss: Optional[str] = None,
+        leeway: int = 30,
     ):
-        self.jwt_secret = jwt_secret
+        self.config = config
         self.aud = aud
         self.iss = iss
         self.leeway = leeway
         self.security = HTTPBearer()
 
-
     def decode_token(self, token: str) -> Dict:
         """Decode and verify the JWT token"""
         try:
-            decoded_secret = self.jwt_secret.encode('utf-8')
+            decoded_secret = self.config.jwt_secret.encode('utf-8')
             
             # Configure verification options
             options = {
