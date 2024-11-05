@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI, Depends
 from fastapi_supabase import (
     SupabaseAuthConfig,
@@ -5,13 +6,32 @@ from fastapi_supabase import (
     add_cors_middleware
 )
 
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 app = FastAPI()
 
-# Initialize configuration
-config = SupabaseAuthConfig.from_env()
+def initialize_auth():
+    """
+    Initialize authentication configuration and JWT authenticator
+    
+    Returns:
+        tuple: (SupabaseAuthConfig, JWTAuthenticator)
+    """
+    try:
+        config = SupabaseAuthConfig.from_env()
+        jwt_auth = JWTAuthenticator(config)
+        return config, jwt_auth
+    except Exception as e:
+        logger.error(f"Failed to initialize authentication: {e}")
+        raise
 
-# Initialize the JWT authenticator
-jwt_auth = JWTAuthenticator(config)
+# Initialize authentication
+config, jwt_auth = initialize_auth()
 
 # Add CORS middleware
 add_cors_middleware(app, config)
