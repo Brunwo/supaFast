@@ -4,7 +4,6 @@ from pydantic import BaseModel
 import jwt
 from typing import Optional, Dict
 from datetime import datetime
-import base64
 from .config import SupabaseAuthConfig
 
 class TokenData(BaseModel):
