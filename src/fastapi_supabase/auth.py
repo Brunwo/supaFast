@@ -31,7 +31,7 @@ class JWTAuthenticator:
     def decode_token(self, token: str) -> Dict:
         """Decode and verify the JWT token"""
         try:
-            decoded_secret = self.config.jwt_secret.encode('utf-8')
+            decoded_secret = self.config.supa_jwt_secret.encode('utf-8')
             
             # Configure verification options
             options = {

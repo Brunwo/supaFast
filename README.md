@@ -46,7 +46,7 @@ Run a sample using httpie:
 ```python
 from fastapi_supabase import SupabaseAuthConfig, JWTAuthenticator
 config = SupabaseAuthConfig(
-jwt_secret="your_jwt_secret",
+supa_jwt_secret="your_jwt_secret",
 origins=["http://localhost:3000"]
 )
 auth = JWTAuthenticator(config)

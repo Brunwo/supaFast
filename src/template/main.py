@@ -23,7 +23,7 @@ def initialize_auth():
         tuple: (SupabaseAuthConfig, JWTAuthenticator)
     """
     try:
-        config = SupabaseAuthConfig.from_env()
+        config: SupabaseAuthConfig =  SupabaseAuthConfig()
         jwt_auth = JWTAuthenticator(config)
         return config, jwt_auth
     except Exception as e:
