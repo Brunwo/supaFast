@@ -1,14 +1,29 @@
 # FastAPI + Supabase Project Template
 
-This documentation provides a complete guide for setting up and using the FastAPI + Supabase project template.
+This documentation provides a complete guide for setting up a lightweight backend service associated with your supabase auth-enabled project.
+It provides minimal FastAPI helpers for JWT token authentication & authorization : 
+ - validates supabase auth JWT token vs your project secret key to secure the endpoints, while leaving all other aspects of the OAuth flow to Supabase : 
+    - the token expiration & refresh token must be handled by another part of your application (typically your frontend JS that uses supabase lib) , as Supabase’s OAuth JWT tokens typically expire in 1 hour (60 minutes) by default.
+ - provides a decorator the check the jwt role
+ - default CORS config 
+
+It does not include code to generate new token as this could mess with supabase, as there would be no matching users in BD
+check the 
+
+[ project template](./src/template/main.py) to get started 
 
 ## 🚀 Quick Start
 
-1. Clone the repository
-2. Run the installation script:
-```bash
-./template/install.sh
+```python
+pip install git+https://github.com/Brunwo/supaFast
 ```
+
+or add 
+```python
+git+https://github.com/Brunwo/supaFast
+```
+
+in your `requirements.txt`
 
 ### Authentication
 
@@ -59,5 +74,33 @@ from fastapi_supabase import SupabaseAuthConfig, JWTAuthenticator
 This will automatically load from .env file
 config = SupabaseAuthConfig.from_env()
 auth = JWTAuthenticator(config)
+
+```
+
+possible future extensions : 
+
+allow checks for custom RBAC roles : 
+https://supabase.com/docs/guides/database/postgres/custom-claims-and-role-based-access-control-rbac
+
+#extract a real token from your app to test it : 
+
+```javascript
+
+var token;
+
+for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.endsWith('-auth-token')) {
+        const storedData = JSON.parse(localStorage.getItem(key)); 
+        token = storedData.access_token; 
+        console.log(`Found token for key "${key}":`, token);
+        break;  
+    }
+}
+
+if (!token) {
+    console.log("No matching token found in localStorage.");
+}
+
 
 ```

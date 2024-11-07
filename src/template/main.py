@@ -1,19 +1,17 @@
+import uvicorn
 import logging
 from fastapi import FastAPI, Depends
 from fastapi_supabase import (
     SupabaseAuthConfig,
     JWTAuthenticator,
-    add_cors_middleware
+    add_cors_middleware,
+    auth
 )
 
-# Configure logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+
 
 def initialize_auth():
     """
@@ -41,14 +39,31 @@ async def public_endpoint():
     return {"message": "This is a public endpoint"}
 
 @app.get("/protected")
-async def protected_endpoint(token_data = Depends(jwt_auth)):
+@jwt_auth.require_anyof_roles(["authenticated"])
+async def protected_endpoint(token_data: auth.TokenData = Depends(jwt_auth)):
     return {
         "message": "This is a protected endpoint",
         "user_id": token_data.user_id,
         "role": token_data.role,
         "expires_at": token_data.exp.isoformat(),
+        "is_anonymous": token_data.is_anonymous,
+    }
+
+@app.get("/not_anonymous")
+@jwt_auth.not_anonymous()
+async def protected_endpoint(token_data: auth.TokenData = Depends(jwt_auth)):
+    return {
+        "message": "This is a protected endpoint",
+        "user_id": token_data.user_id,
+        "role": token_data.role,
+        "expires_at": token_data.exp.isoformat(),
+        "is_anonymous": token_data.is_anonymous,
     }
 
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
