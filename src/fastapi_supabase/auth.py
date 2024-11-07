@@ -83,7 +83,8 @@ class JWTAuthenticator:
                 email=payload.get("email"),
                 exp=datetime.fromtimestamp(payload["exp"]),
                 aud=payload.get("aud"),
-                iss=payload.get("iss")
+                iss=payload.get("iss"),
+                is_anonymous=payload.get("is_anonymous", True)
             )
 
         except Exception as e:
@@ -95,7 +96,7 @@ class JWTAuthenticator:
                 }
             )
         
-    def require_auth(self ,func: Callable) -> Callable:
+    def require_auth(self , func: Callable) -> Callable:
         @wraps(func)
         async def wrapper(*args, credentials: HTTPAuthorizationCredentials = Security(HTTPBearer()), **kwargs):
             payload = self.decode_token(credentials.credentials)
@@ -106,7 +107,7 @@ class JWTAuthenticator:
                 exp=datetime.fromtimestamp(payload["exp"]),
                 aud=payload.get("aud"),
                 iss=payload.get("iss"),
-                type=payload.get("type", "authenticated")
+                # type=payload.get("type", "authenticated")
             )
             print('here')
             return await func(*args, token_data=token_data, **kwargs)
