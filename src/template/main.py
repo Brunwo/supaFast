@@ -1,13 +1,15 @@
 import uvicorn
 import logging
 from fastapi import FastAPI, Depends
-from fastapi_supabase import (
-    SupabaseAuthConfig,
-    JWTAuthenticator,
-    add_cors_middleware,
-    auth
-)
+# from fastapi_supabase.config import SupabaseAuthConfig
+from fastapi_supabase.config import SupabaseAuthConfig
+from fastapi_supabase import (JWTAuthenticator, add_cors_middleware, auth)
 
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()

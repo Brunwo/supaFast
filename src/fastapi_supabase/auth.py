@@ -31,6 +31,24 @@ class JWTAuthenticator:
         self.security = HTTPBearer()
 
     def decode_token(self, token: str) -> Dict:
+        # Check for dev mode first
+        if self.config.dev_mode and self.config.dev_token:
+            if token == self.config.dev_token:
+                return {
+                    "sub": self.config.dev_user_id,
+                    "role": self.config.dev_role,
+                    "email": self.config.dev_email,
+                    "exp": datetime.now().timestamp() + 3600,  # 1 hour from now
+                    "aud": self.aud,
+                    "iss": self.iss,
+                    "is_anonymous": False
+                }
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail={"code": "invalid_dev_token", "message": "Invalid development token"}
+                )
+
         try:
             decoded_secret = self.config.supa_jwt_secret.encode('utf-8')
             return jwt.decode(
@@ -157,5 +175,3 @@ class JWTAuthenticator:
                 return await func(*args, token_data=token_data, **kwargs)
             return wrapper
         return decorator
-
-

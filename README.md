@@ -104,3 +104,61 @@ if (!token) {
 
 
 ```
+origins=["http://localhost:3000"]
+)
+auth = JWTAuthenticator(config)
+```
+### Option 2: Environment variables
+
+```python
+from fastapi_supabase import SupabaseAuthConfig, JWTAuthenticator
+# This will automatically load from .env file
+config = SupabaseAuthConfig.from_env()
+auth = JWTAuthenticator(config)
+```
+
+### Development Mode
+
+For development and testing purposes, you can enable a development mode that bypasses Supabase JWT validation:
+
+```env
+# .env file
+DEV_MODE=true
+DEV_TOKEN=your-dev-token  # The token to check against
+DEV_USER_ID=custom-dev-user  # Optional, defaults to "dev-user"
+DEV_ROLE=custom-role  # Optional, defaults to "authenticated"
+DEV_EMAIL=custom@email.com  # Optional
+```
+
+When dev mode is enabled:
+- JWT validation against Supabase is bypassed
+- Token is checked for exact match with `DEV_TOKEN`
+- A warning is logged indicating dev mode is active
+- The configured dev user details are returned upon successful authentication
+
+⚠️ **Important**: Never enable dev mode in production environments.
+
+possible future extensions : 
+
+allow checks for custom RBAC roles : 
+https://supabase.com/docs/guides/database/postgres/custom-claims-and-role-based-access-control-rbac
+
+#extract a real token from your app to test it : 
+
+```javascript
+
+var token;
+
+for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.endsWith('-auth-token')) {
+        const storedData = JSON.parse(localStorage.getItem(key)); 
+        token = storedData.access_token; 
+        console.log(`Found token for key "${key}":`, token);
+        break;  
+    }
+}
+
+if (!token) {
+    console.log("No matching token found in localStorage.");
+}
