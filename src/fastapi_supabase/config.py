@@ -27,20 +27,34 @@ class SupabaseAuthConfig(BaseSettings):
         case_sensitive = False
         extra = "allow"          # This allows extra fields in the environment
 
+    from pydantic import field_validator
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if self.dev_mode:
-            logger.info(f"Dev mode enabled with token: {self.dev_token}")
+            # This warning is now handled by the validator for dev_mode
+            # logger.info(f"Dev mode enabled with token: {self.dev_token}")
             logger.info(f"Dev user: {self.dev_user_id} with role: {self.dev_role}")
 
+    @field_validator("origins", mode="before")
     @classmethod
-    def parse_env_var(cls, field_name: str, raw_val: str) -> Any:
-        if field_name == 'origins':
-            return [x.strip() for x in raw_val.split(',')]
+    def parse_origins(cls, value: Any) -> Optional[List[str]]:
+        if isinstance(value, str):
+            return [x.strip() for x in value.split(",")]
+        if isinstance(value, list):
+            return value
+        return None # Or raise error, or return default
 
-        if field_name == 'dev_mode' and raw_val.lower() == 'true':
+    @field_validator("dev_mode", mode="before")
+    @classmethod
+    def parse_dev_mode(cls, value: Any) -> bool:
+        if isinstance(value, str):
+            val = value.lower() == 'true'
+            if val:
                 logger.warning('Running in DEV MODE, do not use in production')
-                logger.debug(f'Loading dev mode from env var: {raw_val}')
-                return True
-
-        return cls.json_loads(raw_val)
+            return val
+        if isinstance(value, bool):
+            if value:
+                logger.warning('Running in DEV MODE, do not use in production')
+            return value
+        return False # Default to False if not a string or bool

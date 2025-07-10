@@ -19,5 +19,5 @@
 
 pip uninstall fastapi-supabase -y
 
-
-pip install -e . --no-cache-dir
+# Install the package in editable mode with dev dependencies
+pip install -e ".[dev]" --no-cache-dir

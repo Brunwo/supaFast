@@ -125,9 +125,9 @@ class JWTAuthenticator:
                 exp=datetime.fromtimestamp(payload["exp"]),
                 aud=payload.get("aud"),
                 iss=payload.get("iss"),
-                # type=payload.get("type", "authenticated")
+                is_anonymous=payload.get("is_anonymous", True) # Align with TokenData
             )
-            print('here')
+            # print('here') # Removed debug print
             return await func(*args, token_data=token_data, **kwargs)
         return wrapper
 
