@@ -1,4 +1,4 @@
-export $(grep -v '^#' .env | xargs)
+export TEST_TOKEN=$(grep TEST_TOKEN .env | cut -d '=' -f2)
 
 http GET http://127.0.0.1:8000/public
 

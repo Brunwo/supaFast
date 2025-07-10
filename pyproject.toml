@@ -17,6 +17,7 @@ dependencies = [
     "fastapi>=0.100.0",
     "pyjwt>=2.8.0",
     "uvicorn>=0.22.0",
+    "pydantic-settings>=2.0.0",
 ]
 
 [project.optional-dependencies]
