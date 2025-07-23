@@ -1,0 +1,8 @@
+# Ignore local Terraform state and configuration files
+*.tfstate
+*.tfstate.backup
+.terraform
+.terraform.lock.hcl
+
+# Ignore secret variable files
+*.tfvars

@@ -1,0 +1,10 @@
+# For Google Cloud Functions
+functions-framework==3.*
+
+# For authentication logic
+pyjwt>=2.8.0
+pydantic-settings>=2.0.0
+
+# Install our package directly from GitHub
+# Make sure you have pushed the latest changes to the main branch!
+git+https://github.com/Brunwo/supaFast.git@main
