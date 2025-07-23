@@ -17,8 +17,9 @@ else:
 
 
 # from fastapi_supabase.config import SupabaseAuthConfig
+from fastapi_supabase import (JWTAuthenticator, add_cors_middleware)
 from fastapi_supabase.config import SupabaseAuthConfig
-from fastapi_supabase import (JWTAuthenticator, add_cors_middleware, auth)
+from fastapi_supabase.models import TokenData
 
 # Configure logging
 logging.basicConfig(
@@ -29,7 +30,6 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-
 def initialize_auth():
     """
     Initialize authentication configuration and JWT authenticator
@@ -38,7 +38,12 @@ def initialize_auth():
         tuple: (SupabaseAuthConfig, JWTAuthenticator)
     """
     try:
-        config: SupabaseAuthConfig =  SupabaseAuthConfig()
+        config: SupabaseAuthConfig =  SupabaseAuthConfig(
+            supa_url=os.getenv("SUPABASE_URL"),
+            supa_anon_key=os.getenv("SUPABASE_ANON_KEY"),
+            supa_jwks_url=f"{os.getenv("SUPABASE_URL")}/auth/v1/.well-known/jwks.json",
+            supa_use_legacy_jwt=os.getenv("SUPABASE_USE_LEGACY_JWT", "False").lower() == "true"
+        )
         jwt_auth = JWTAuthenticator(config)
         return config, jwt_auth
     except Exception as e:
@@ -57,7 +62,7 @@ async def public_endpoint():
 
 @app.get("/protected")
 @jwt_auth.require_anyof_roles(["authenticated"])
-async def protected_endpoint(token_data: auth.TokenData = Depends(jwt_auth)):
+async def protected_endpoint(token_data: TokenData = Depends(jwt_auth)):
     return {
         "message": "This is a protected endpoint",
         "user_id": token_data.user_id,
@@ -68,7 +73,7 @@ async def protected_endpoint(token_data: auth.TokenData = Depends(jwt_auth)):
 
 @app.get("/not_anonymous")
 @jwt_auth.not_anonymous()
-async def protected_endpoint(token_data: auth.TokenData = Depends(jwt_auth)):
+async def protected_endpoint(token_data: TokenData = Depends(jwt_auth)):
     return {
         "message": "This is a protected endpoint",
         "user_id": token_data.user_id,

@@ -12,7 +12,13 @@ logger = logging.getLogger(__name__)
 
 class SupabaseAuthConfig(BaseSettings):
 
-    supa_jwt_secret: str
+    supa_jwt_secret: Optional[str] = None
+    supa_url: Optional[str] = None
+    supa_anon_key: Optional[str] = None
+    supa_use_legacy_jwt: bool = False
+    supa_jwks_url: Optional[str] = None
+
+
     origins: Optional[List[str]] = None
     dev_mode: bool = False
     dev_token: Optional[str] = None
