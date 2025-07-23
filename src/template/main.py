@@ -1,6 +1,21 @@
 import uvicorn
 import logging
 from fastapi import FastAPI, Depends
+from dotenv import load_dotenv
+import os
+
+# Determine the path to the .env file relative to this script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ENV_PATH = os.path.join(BASE_DIR, '.env')
+
+# Load the .env file before importing SupabaseAuthConfig
+if os.path.exists(ENV_PATH):
+    load_dotenv(ENV_PATH)
+    logging.info(f"Loaded environment variables from: {ENV_PATH}")
+else:
+    logging.warning(f".env file not found at: {ENV_PATH}. Relying on environment variables.")
+
+
 # from fastapi_supabase.config import SupabaseAuthConfig
 from fastapi_supabase.config import SupabaseAuthConfig
 from fastapi_supabase import (JWTAuthenticator, add_cors_middleware, auth)
