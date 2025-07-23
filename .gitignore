@@ -2,3 +2,8 @@
 .env
 *.pyc
 *.whl
+supabase_tests/node_modules/
+
+supabase_tests/jwt.token
+
+uvicorn.log

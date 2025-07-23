@@ -1,9 +1,12 @@
 import jwt
 import json
 import urllib.request
+import os
 
 # Supabase project URL and JWKS endpoint
-SUPABASE_URL = "https://edhlshtkczpgmgraljgc.supabase.co"
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+if not SUPABASE_URL:
+    raise ValueError("SUPABASE_URL environment variable not set.")
 JWKS_URL = f"{SUPABASE_URL}/auth/v1/.well-known/jwks.json"
 
 # The JWT retrieved from the previous step
