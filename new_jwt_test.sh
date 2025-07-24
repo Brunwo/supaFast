@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#run supabase_tests/get-test-jwt.js first to init the token file
+
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
@@ -71,6 +73,8 @@ if http --ignore-stdin --check-status GET http://127.0.0.1:8000/protected "Autho
     fi
 else
     echo "Test 1 FAILED: Non-2xx status code."
+    echo "Server response:"
+    http --ignore-stdin -v GET http://127.0.0.1:8000/protected "Authorization: Bearer $VALID_TOKEN" || true
     exit 1
 fi
 
@@ -87,6 +91,20 @@ if http --ignore-stdin --check-status GET http://127.0.0.1:8000/not_anonymous "A
     fi
 else
     echo "Test 2 FAILED: Non-2xx status code."
+    echo "Server response:"
+    http --ignore-stdin -v GET http://127.0.0.1:8000/not_anonymous "Authorization: Bearer $VALID_TOKEN" || true
+    exit 1
+fi
+
+# Test 3: Accessing /admin with a non-admin token
+echo "Test 3: Accessing /admin with a non-admin token..."
+http_status=$(http --ignore-stdin --status GET http://127.0.0.1:8000/admin "Authorization: Bearer $VALID_TOKEN")
+if [[ "$http_status" -eq 403 ]]; then
+    echo "Test 3 PASSED"
+else
+    echo "Test 3 FAILED: Expected 403 status code, but got $http_status."
+    echo "Server response:"
+    http --ignore-stdin -v GET http://127.0.0.1:8000/admin "Authorization: Bearer $VALID_TOKEN" || true
     exit 1
 fi
 

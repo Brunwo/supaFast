@@ -1,16 +1,15 @@
 
+require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 
 // Supabase project credentials
-const supabaseUrl = 'https://edhlshtkczpgmgraljgc.supabase.co';
-const supabaseAnonKey  ='sb_publishable_uDQZM9e8-9i7WCIqLJpyng_UbZdnis5'
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-// Test user credentials : create from supabase UI
-// turn captcha temporarly off in https://supabase.com/dashboard/project/<>/auth/protection
-
-const email = 'test@test.com';
-const password = 'testtest';
+// Test user credentials
+const email = process.env.TEST_EMAIL;
+const password = process.env.TEST_PASSWORD;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 

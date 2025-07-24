@@ -1,5 +1,6 @@
 .aider*
 .env
+supabase_tests/.env
 *.pyc
 *.whl
 supabase_tests/node_modules/

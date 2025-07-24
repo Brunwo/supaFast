@@ -55,6 +55,8 @@ This guide helps you run the example FastAPI application included in `src/templa
      # SUPA_JWT_SECRET="your_actual_supabase_jwt_secret"
 
      # For Development/Testing the example with test.sh:
+     DEV_MODE forces specific test user data from the config. 
+
      DEV_MODE=true
      # This DEV_TOKEN should match the TEST_TOKEN in the root .env if you use test.sh
      DEV_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LXVzZXIiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImlzX2Fub255bW91cyI6ZmFsc2UsImV4cCI6MTkwMDAwMDAwMH0.dummy_signature_for_test_sh"

@@ -34,8 +34,8 @@ sleep 2 # Give it a moment to start up
 
 # Generate tokens using legacy scripts
 echo "Generating legacy JWT tokens..."
-VALID_TOKEN=$(python3 create_jwt.py)
-GUEST_TOKEN=$(python3 create_jwt_guest.py)
+VALID_TOKEN=$(python3 legacy_create_jwt.py)
+GUEST_TOKEN=$(python3 legacy_create_jwt_guest.py)
 
 echo "Running tests..."
 
