@@ -84,17 +84,19 @@ class JWTChecker:
             jwks = await self.get_jwks()
             public_key = self.get_public_key(kid, jwks, alg)
 
+            issuer = self.iss or f"{self.config.supa_url}/auth/v1"
+
             return jwt.decode(
                 token,
                 public_key,
                 algorithms=[alg],
                 audience=self.aud,
-                issuer=self.iss,
+                issuer=issuer,
                 options={
                     "verify_signature": True,
                     "verify_exp": True,
                     "verify_aud": bool(self.aud),
-                    "verify_iss": bool(self.iss),
+                    "verify_iss": True,
                     "leeway": self.leeway,
                 }
             )
@@ -177,6 +179,8 @@ class JWTChecker:
             return wrapper
         return decorator
     
+
+    #supabase has an option for authenticated, but anonymous users, this can be checked here
     def not_anonymous(self) -> Callable:
         def decorator(func: Callable) -> Callable:
             @wraps(func)
