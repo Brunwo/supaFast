@@ -64,3 +64,13 @@ class SupabaseAuthConfig(BaseSettings):
                 logger.warning('Running in DEV MODE, do not use in production')
             return value
         return False # Default to False if not a string or bool
+
+    from pydantic import model_validator
+
+    @model_validator(mode="after")
+    def set_jwks_url(self) -> "SupabaseAuthConfig":
+        if not self.supa_jwks_url and self.supa_url:
+            # Derived from standard Supabase auth endpoint
+            base_url = self.supa_url.rstrip("/")
+            self.supa_jwks_url = f"{base_url}/auth/v1/.well-known/jwks.json"
+        return self

@@ -6,8 +6,8 @@ This project provides a lightweight library and an example template for integrat
 
 This library now supports two primary modes for JWT verification:
 
-1.  **Modern (Default):** Asynchronous verification using Supabase's JWKS endpoint (RS256/ES256 algorithms). This is the recommended and default approach for new projects and those that have migrated their Supabase JWT signing to asymmetric keys.
-2.  **Legacy:** Synchronous verification using a shared `SUPA_JWT_SECRET` (HS256 algorithm). This mode is provided for backward compatibility with older Supabase projects or specific use cases where HS256 is still in use. It can be enabled via the `SUPABASE_USE_LEGACY_JWT` configuration flag.
+1.  **Modern (Default):** Asynchronous verification using Supabase's JWKS (JSON Web Key Set) endpoint. This uses asymmetric cryptography (RS256/ES256) and is the current industry standard. It **does not require** your `SUPA_JWT_SECRET`, only your project URL.
+2.  **Legacy:** Synchronous verification using a shared `SUPA_JWT_SECRET` (HS256 algorithm). This is only for older projects that haven't migrated to asymmetric signing. Enable via `SUPABASE_USE_LEGACY_JWT=True`.
 
 ## Key Features:**
 - Validates Supabase Auth JWT tokens against your project's JWT secret (legacy HS256).
@@ -137,8 +137,8 @@ The `SupabaseAuthConfig` model (from `fastapi_supabase.config`) loads the follow
 - `supa_jwt_secret` (Optional[str]): Your Supabase project's JWT secret. Required only if `supa_use_legacy_jwt` is `True`.
 - `supa_url` (Optional[str]): Your Supabase project URL (e.g., `https://your-project.supabase.co`). Required for JWKS verification.
 - `supa_anon_key` (Optional[str]): Your Supabase project's `anon` key. Used for client-side interactions if needed.
-- `supa_use_legacy_jwt` (bool, default=False): If `True`, uses the legacy HS256 JWT verification with `supa_jwt_secret`. If `False` (default), uses JWKS verification (RS256/ES256) with `supa_jwks_url`.
-- `supa_jwks_url` (Optional[str]): The URL to your Supabase project's JWKS endpoint (e.g., `https://your-project.supabase.co/auth/v1/.well-known/jwks.json`). Required if `supa_use_legacy_jwt` is `False`.
+- `supa_use_legacy_jwt` (bool, default=False): If `True`, uses legacy HS256 verification (requires `supa_jwt_secret`). If `False` (default), uses modern JWKS verification.
+- `supa_jwks_url` (Optional[str]): The URL to your Supabase project's JWKS endpoint. **Automatically derived** from `supa_url` if not provided (e.g., `https://<ref>.supabase.co/auth/v1/.well-known/jwks.json`).
 - `origins` (Optional[List[str]], default=None): List of allowed CORS origins. Parsed from a comma-separated string in env vars.
 - `dev_mode` (bool, default=False): If true, bypasses Supabase JWT validation and uses `DEV_TOKEN`.
 - `dev_token` (Optional[str]): Token to use when `dev_mode` is true.
